@@ -19,7 +19,7 @@ public class MatrixmultiplicationTest
     /// <summary>
     /// Initializes matrices before each test.
     /// </summary>
-    [SetUp] 
+    [SetUp]
     public void Setup()
     {
         this.matrix1 = new int[,]

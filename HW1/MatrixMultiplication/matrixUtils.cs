@@ -6,10 +6,10 @@
 /// </summary>
 public static class MatrixUtils
 {
-    
     /// <summary>
     /// Printing the matrix to the console.
     /// </summary>
+    /// <param name="matrix">input matrix.</param>
     public static void MatrixOutput(int[,] matrix)
     {
         var rows = matrix.GetLength(0);
@@ -24,10 +24,15 @@ public static class MatrixUtils
             Console.WriteLine();
         }
     }
-    
+
     /// <summary>
-    /// Generates a random integer matrix of the specified size.
+    /// Generates a random integer matrix of the specified size with values in the given range.
     /// </summary>
+    /// <param name="rows">Number of rows in the matrix.</param>
+    /// <param name="columns">Number of columns in the matrix.</param>
+    /// <param name="minValue">Minimum value for matrix elements (inclusive).</param>
+    /// <param name="maxValue">Maximum value for matrix elements (exclusive).</param>
+    /// <returns>A 2D integer array filled with random values.</returns>
     public static int[,] GeneratorRandomMatrix(int rows, int columns, int minValue = -10, int maxValue = 10)
     {
         var matrix = new int[rows, columns];
@@ -43,7 +48,7 @@ public static class MatrixUtils
 
         return matrix;
     }
-    
+
     /// <summary>
     /// Multiplies two matrices and returns the result.
     /// </summary>
@@ -61,7 +66,7 @@ public static class MatrixUtils
         {
             throw new ArgumentException("The number of columns of the first matrix is not equal to the number of rows of the second one!");
         }
-        
+
         var result = new int[lengthRowMatrix1, lengthColumnMatrix2];
 
         for (var i = 0; i < lengthRowMatrix1; i++)
@@ -76,6 +81,7 @@ public static class MatrixUtils
                 result[i, j] = sum;
             }
         }
+
         return result;
     }
 
@@ -98,10 +104,10 @@ public static class MatrixUtils
         {
             throw new ArgumentException("The number of columns of the first matrix is not equal to the number of rows of the second one!");
         }
-        
+
         var result = new int[lengthRowMatrix1, lengthColumnMatrix2];
         var threads = new Thread[lengthRowMatrix1];
-        
+
         for (var i = 0; i < lengthRowMatrix1; i++)
         {
             var row = i;
@@ -119,14 +125,15 @@ public static class MatrixUtils
             });
             threads[row].Start();
         }
-        
+
         for (var i = 0; i < lengthRowMatrix1; i++)
         {
             threads[i].Join();
         }
-            
+
         return result;
     }
+
     /// <summary>
     /// Compares two matrices for equality.
     /// </summary>
@@ -144,12 +151,12 @@ public static class MatrixUtils
             return false;
         }
 
-        int rows = matrix1.GetLength(0);
-        int cols = matrix1.GetLength(1);
-        
-        for (int i = 0; i < rows; i++)
+        var rows = matrix1.GetLength(0);
+        var cols = matrix1.GetLength(1);
+
+        for (var i = 0; i < rows; i++)
         {
-            for (int j = 0; j < cols; j++)
+            for (var j = 0; j < cols; j++)
             {
                 if (matrix1[i, j] != matrix2[i, j])
                 {
