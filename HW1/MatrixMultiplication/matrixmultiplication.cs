@@ -31,7 +31,7 @@ namespace MatrixMultiplication
             var result = MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2);
 
             Console.WriteLine("\nРезультат умножения:");
-            MatrixUtils.MatrixOutput(result);
+            MatrixUtils.MatrixOutput(result); 
         }
     }
 }
