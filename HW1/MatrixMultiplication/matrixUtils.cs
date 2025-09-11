@@ -38,7 +38,7 @@ public static class MatrixUtils
     /// <param name="minValue">Minimum value for matrix elements (inclusive).</param>
     /// <param name="maxValue">Maximum value for matrix elements (exclusive).</param>
     /// <returns>A 2D integer array filled with random values.</returns>
-    public static int[,] GeneratorRandomMatrix(int rows, int columns, int minValue = -10, int maxValue = 10)
+    public static int[,] GeneratorRandomMatrix(int rows, int columns, int minValue = -100, int maxValue = 100)
     {
         var matrix = new int[rows, columns];
         var randomNumbers = new Random();
