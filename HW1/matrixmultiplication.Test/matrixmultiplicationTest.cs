@@ -2,7 +2,7 @@
 // Copyright (c) khusainovilas. All rights reserved.
 // </copyright>
 
-namespace matrixmultiplication.Test;
+namespace Matrixmultiplication.Test;
 
 using MatrixMultiplication;
 
@@ -44,10 +44,10 @@ public class MatrixmultiplicationTest
     /// Checks that the result matches the expected output.
     /// </summary>
     [Test]
-    public void MatrixMultiply_ReturnsCorrectResult()
+    public void MatrixUtils_MatrixMultiply_Matrix1_Matrix2()
     {
-        var result = MatrixUtils.MatrixMultiply(matrix1, matrix2);
-        Assert.That(MatrixUtils.MatrixEquals(result, matrixExpected), Is.True);
+        var result = MatrixUtils.MatrixMultiply(this.matrix1, this.matrix2);
+        Assert.That(MatrixUtils.MatrixEquals(result, this.matrixExpected), Is.True);
     }
 
     /// <summary>
@@ -55,10 +55,9 @@ public class MatrixmultiplicationTest
     /// Ensures that parallel computation produces the correct result.
     /// </summary>
     [Test]
-    public void ParallelMatrixMultiply_ReturnsCorrectResult()
+    public void MatrixUtils_MultiplyMatrixParallel_Matrix1_Matrix2()
     {
-        var result = MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2);
-        Assert.That(MatrixUtils.MatrixEquals(result, matrixExpected), Is.True); 
+        var result = MatrixUtils.MultiplyMatrixParallel(this.matrix1, this.matrix2);
+        Assert.That(MatrixUtils.MatrixEquals(result, this.matrixExpected), Is.True);
     }
 }
-

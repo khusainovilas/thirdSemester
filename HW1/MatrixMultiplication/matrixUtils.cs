@@ -1,4 +1,8 @@
-﻿namespace MatrixMultiplication;
+﻿// <copyright file="matrixUtils.cs" company="khusainovilas">
+// Copyright (c) khusainovilas. All rights reserved.
+// </copyright>
+
+namespace MatrixMultiplication;
 
 /// <summary>
 /// Helper static class for working with matrices.
@@ -21,6 +25,7 @@ public static class MatrixUtils
             {
                 Console.Write(matrix[i, j].ToString().PadLeft(5));
             }
+
             Console.WriteLine();
         }
     }
@@ -36,13 +41,13 @@ public static class MatrixUtils
     public static int[,] GeneratorRandomMatrix(int rows, int columns, int minValue = -10, int maxValue = 10)
     {
         var matrix = new int[rows, columns];
-        var randomNum = new Random();
+        var randomNumbers = new Random();
 
         for (var i = 0; i < rows; i++)
         {
             for (var j = 0; j < columns; j++)
             {
-                matrix[i, j] = randomNum.Next(minValue, maxValue);
+                matrix[i, j] = randomNumbers.Next(minValue, maxValue);
             }
         }
 
@@ -78,6 +83,7 @@ public static class MatrixUtils
                 {
                     sum += matrix1[i, k] * matrix2[k, j];
                 }
+
                 result[i, j] = sum;
             }
         }
@@ -93,7 +99,7 @@ public static class MatrixUtils
     /// <param name="matrix2">Second matrix.</param>
     /// <returns>Resulting matrix of multiplication.</returns>
     /// <exception cref="ArgumentException">Thrown when dimensions are not compatible for multiplication.</exception>
-    public static int[,] MultiplyMatrixParallel(int[,] matrix1, int[,] matrix2) 
+    public static int[,] MultiplyMatrixParallel(int[,] matrix1, int[,] matrix2)
     {
         var lengthRowMatrix1 = matrix1.GetLength(0);
         var lengthColumnMatrix1 = matrix1.GetLength(1);
@@ -120,6 +126,7 @@ public static class MatrixUtils
                     {
                         sum += matrix1[row, k] * matrix2[k, j];
                     }
+
                     result[row, j] = sum;
                 }
             });
@@ -152,11 +159,11 @@ public static class MatrixUtils
         }
 
         var rows = matrix1.GetLength(0);
-        var cols = matrix1.GetLength(1);
+        var columns = matrix1.GetLength(1);
 
         for (var i = 0; i < rows; i++)
         {
-            for (var j = 0; j < cols; j++)
+            for (var j = 0; j < columns; j++)
             {
                 if (matrix1[i, j] != matrix2[i, j])
                 {
@@ -164,6 +171,69 @@ public static class MatrixUtils
                 }
             }
         }
+
         return true;
+    }
+
+    /// <summary>
+    /// Reads a matrix of integers from a text file.
+    /// </summary>
+    /// <param name="path">The path to the file containing the matrix.</param>
+    /// <returns>matrix from file.</returns>
+    public static int[,] ReadMatrixFromFile(string path)
+    {
+        var lines = File.ReadAllLines(path);
+        if (lines.Length == 0)
+        {
+            throw new Exception("Matrix file is empty.");
+        }
+
+        var rows = lines.Length;
+        var columns = lines[0].Split(' ').Length;
+
+        var matrix = new int[rows, columns];
+
+        for (var i = 0; i < rows; i++)
+        {
+            var nums = lines[i].Split(' ').Select(int.Parse).ToArray();
+
+            if (nums.Length != columns)
+            {
+                throw new Exception("Invalid matrix format: the matrix is not complete");
+            }
+
+            for (var j = 0; j < columns; j++)
+            {
+                matrix[i, j] = nums[j];
+            }
+        }
+
+        return matrix;
+    }
+
+    /// <summary>
+    /// Writes a matrix to a text file.
+    /// </summary>
+    /// <param name="path">The path to the output file.</param>
+    /// <param name="matrix">Matrix for writing to file to write.</param>
+    public static void WriteMatrixToFile(string path, int[,] matrix)
+    {
+        var rows = matrix.GetLength(0);
+        var columns = matrix.GetLength(1);
+
+        using var writer = new StreamWriter(path);
+        for (var i = 0; i < rows; i++)
+        {
+            for (var j = 0; j < columns; j++)
+            {
+                writer.Write(matrix[i, j]);
+                if (j < columns - 1)
+                {
+                    writer.Write(" ");
+                }
+            }
+
+            writer.WriteLine();
+        }
     }
 }
