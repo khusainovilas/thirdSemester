@@ -11,26 +11,25 @@ using System.Linq;
 /// <summary>
 /// Compare the operating speed with the sequential version depending on the matrix sizes.
 /// </summary>
-public class MatrixBench
+public static class MatrixBench
 {
     /// <summary>
     /// Runs the benchmark for multiple matrix sizes and saves the results to a file.
     /// </summary>
     public static void RunBenchmark()
     {
-        int[] sized = [100, 200, 500];
+        int[] sizes = [100, 200, 300, 400, 500];
         const string filePath = "resultBenchmark.txt";
 
-        File.WriteAllText(filePath, "Size\tSeq_Mean\tSeq_Sigma\tPar_Mean\tPar_Sigma\n");
+        File.WriteAllText(filePath, $"{"Size",4} {"Seq_Exp",10} {"Seq_Dev",10} {"Par_Exp",10} {"Par_Dev",10}\n");
 
-        foreach (var size in sized)
+        foreach (var size in sizes)
         {
             var sequentialResult = BenchmarkMatrixMultiplication(size, false);
             var parallelResult = BenchmarkMatrixMultiplication(size, true);
 
-            // {значение, ширина} — задаёт фиксированную ширину колонки
             var line =
-                $"{size,4} {sequentialResult.Mean,10:F4} {sequentialResult.Sigma,10:F4} {parallelResult.Mean,10:F4} {parallelResult.Sigma,10:F4}";
+                $"{size,4} {sequentialResult.Expectation,10:F4} {sequentialResult.Deviation,10:F4} {parallelResult.Expectation,10:F4} {parallelResult.Deviation,10:F4}";
 
             File.AppendAllText("resultBenchmark.txt", line + Environment.NewLine);
         }
@@ -43,21 +42,22 @@ public class MatrixBench
     /// <param name="useParallel">If true, uses parallel matrix multiplication.</param>
     /// <param name="repeat">Number of measurement repetitions for statistics (default 100).</param>
     /// <returns>
-    /// Tuple (Mean, Sigma):
-    /// Mean — mathematical expectation;
-    /// Sigma — standard deviation.</returns>
-    private static (double Mean, double Sigma) BenchmarkMatrixMultiplication(int size, bool useParallel, int repeat = 10)
+    /// Tuple (expectation, deviation):.
+    /// - Expectation: mathematical expectation time in milliseconds.
+    /// - Deviation: standard deviation time in milliseconds.
+    /// </returns>
+    private static (double Expectation, double Deviation) BenchmarkMatrixMultiplication(int size, bool useParallel, int repeat = 10)
     {
-        var elapsedTimes = new double[10];
+        var elapsedTimes = new double[repeat];
         for (var i = 0; i < repeat; i++)
         {
             elapsedTimes[i] = PerformSingleRun(size, useParallel);
         }
 
-        var mean = elapsedTimes.Average();
-        var sigma = Math.Sqrt(elapsedTimes.Average(t => Math.Pow(t - mean, 2)));
+        var expectation = elapsedTimes.Average();
+        var deviation = Math.Sqrt(elapsedTimes.Average(t => Math.Pow(t - expectation, 2)));
 
-        return (mean, sigma);
+        return (expectation, deviation);
     }
 
     /// <summary>
@@ -73,9 +73,14 @@ public class MatrixBench
 
         var stopwatch = Stopwatch.StartNew();
 
-        _ = useParallel
-            ? MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2)
-            : MatrixUtils.MatrixMultiply(matrix1, matrix2);
+        if (useParallel)
+        {
+            MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2);
+        }
+        else
+        {
+            MatrixUtils.MatrixMultiply(matrix1, matrix2);
+        }
 
         stopwatch.Stop();
 

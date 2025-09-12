@@ -11,26 +11,6 @@ namespace MatrixMultiplication;
 public static class MatrixUtils
 {
     /// <summary>
-    /// Printing the matrix to the console.
-    /// </summary>
-    /// <param name="matrix">input matrix.</param>
-    public static void MatrixOutput(int[,] matrix)
-    {
-        var rows = matrix.GetLength(0);
-        var columns = matrix.GetLength(1);
-
-        for (var i = 0; i < rows; i++)
-        {
-            for (var j = 0; j < columns; j++)
-            {
-                Console.Write(matrix[i, j].ToString().PadLeft(5));
-            }
-
-            Console.WriteLine();
-        }
-    }
-
-    /// <summary>
     /// Generates a random integer matrix of the specified size with values in the given range.
     /// </summary>
     /// <param name="rows">Number of rows in the matrix.</param>
@@ -67,6 +47,7 @@ public static class MatrixUtils
         var lengthRowMatrix2 = matrix2.GetLength(0);
         var lengthColumnMatrix2 = matrix2.GetLength(1);
 
+        // Checking the compatibility of matrices for multiplication
         if (lengthColumnMatrix1 != lengthRowMatrix2)
         {
             throw new ArgumentException("The number of columns of the first matrix is not equal to the number of rows of the second one!");
@@ -106,9 +87,10 @@ public static class MatrixUtils
         var lengthRowMatrix2 = matrix2.GetLength(0);
         var lengthColumnMatrix2 = matrix2.GetLength(1);
 
+        // Checking the compatibility of matrices for multiplication
         if (lengthColumnMatrix1 != lengthRowMatrix2)
         {
-            throw new ArgumentException("The number of columns of the first matrix is not equal to the number of rows of the second one!");
+            throw new ArgumentException("The number of columns of the first matrix is not equal to the number of rows of the second one.");
         }
 
         var result = new int[lengthRowMatrix1, lengthColumnMatrix2];
@@ -182,21 +164,38 @@ public static class MatrixUtils
     /// <returns>matrix from file.</returns>
     public static int[,] ReadMatrixFromFile(string path)
     {
+        // Checking the existence of the file
+        if (!File.Exists(path))
+        {
+            throw new FileNotFoundException("File not found.");
+        }
+
         var lines = File.ReadAllLines(path);
+
+        // Checking that the file is not empty
         if (lines.Length == 0)
         {
             throw new Exception("Matrix file is empty.");
         }
 
         var rows = lines.Length;
-        var columns = lines[0].Split(' ').Length;
+        var columns = lines[0].Split(' ', StringSplitOptions.RemoveEmptyEntries).Length;
 
         var matrix = new int[rows, columns];
 
         for (var i = 0; i < rows; i++)
         {
-            var nums = lines[i].Split(' ').Select(int.Parse).ToArray();
+            // Check that the string contains only numbers, spaces, and minus signs.
+            if (lines[i].Any(c => !char.IsDigit(c) && c != ' ' && c != '-'))
+            {
+                throw new Exception("Invalid character in matrix file: only digits, spaces and minus signs are allowed.");
+            }
 
+            var nums = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries)
+                .Select(int.Parse)
+                .ToArray();
+
+            // Checking that all rows and columns in the matrix have the same length
             if (nums.Length != columns)
             {
                 throw new Exception("Invalid matrix format: the matrix is not complete");
