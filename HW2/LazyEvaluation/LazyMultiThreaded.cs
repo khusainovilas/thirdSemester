@@ -5,15 +5,15 @@
 namespace LazyEvaluation;
 
 /// <summary>
-/// A multi-threaded implementation of the ILazy interface for lazy evaluation.
+/// A multithreaded implementation of the ILazy interface for lazy evaluation.
 /// </summary>
 /// <typeparam name="T">The type of the value produced by the lazy computation.</typeparam>
 public class LazyMultiThreaded<T> : ILazy<T>
 {
-    private Func<T>? supplier;
-    private T value;
-    private volatile bool isComputed;
     private readonly object lockObject = new object();
+    private Func<T>? supplier;
+    private T? value;
+    private volatile bool isComputed;
 
     /// <summary>
     /// Initializes a new instance of the <see cref="LazyMultiThreaded{T}"/> class.
@@ -26,7 +26,7 @@ public class LazyMultiThreaded<T> : ILazy<T>
     }
 
     /// <inheritdoc/>
-    public T Get()
+    public T? Get()
     {
         if (this.isComputed)
         {

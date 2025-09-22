@@ -11,7 +11,7 @@ namespace LazyEvaluation;
 public class LazySingleThreaded<T> : ILazy<T>
 {
     private Func<T>? supplier;
-    private T value;
+    private T? value;
     private bool isComputed;
 
     /// <summary>
@@ -25,7 +25,7 @@ public class LazySingleThreaded<T> : ILazy<T>
     }
 
     /// <inheritdoc/>
-    public T Get()
+    public T? Get()
     {
         if (this.isComputed)
         {
