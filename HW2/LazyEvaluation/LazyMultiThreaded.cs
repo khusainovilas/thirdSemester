@@ -10,7 +10,7 @@ namespace LazyEvaluation;
 /// <typeparam name="T">The type of the value produced by the lazy computation.</typeparam>
 public class LazyMultiThreaded<T> : ILazy<T>
 {
-    private readonly object lockObject = new object();
+    private readonly object lockObject = new();
     private Func<T>? supplier;
     private T? value;
     private volatile bool isComputed;
