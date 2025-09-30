@@ -13,30 +13,43 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
     /// Verifies that the supplier is called exactly once during concurrent Get() calls in LazyMultiThreaded.
     /// </summary>
     [Test]
-    public void LazyMultiThreaded_Get_SimpleString_ConcurrentCalls_SingleSupplierCall()
+    public void LazyMultiThreaded_Get_String_SingleSupplierCall()
     {
         var callCount = 0;
-
-        var supplier = new Func<string>(Supplier);
-        var lazy = this.CreateLazy(supplier);
-        const int taskCount = 10;
-        var tasks = new Task[taskCount];
-
-        for (var i = 0; i < taskCount; i++)
+        var lazy = this.CreateLazy(() =>
         {
-            tasks[i] = Task.Run(() => lazy.Get());
+        Interlocked.Increment(ref callCount);
+        return "test";
+        });
+
+        const int threadsCount = 100;
+        var threads = new Thread[threadsCount];
+        var results = new string[threadsCount];
+
+        for (var i = 0; i < threadsCount; i++)
+        {
+            var index = i;
+            threads[i] = new Thread(() =>
+            {
+                results[index] = lazy.Get() ?? string.Empty;
+            });
         }
 
-        Task.WhenAll(tasks).Wait();
-
-        Assert.That(callCount, Is.EqualTo(1));
-        return;
-
-        string Supplier()
+        foreach (var thread in threads)
         {
-            callCount++;
-            return "test";
+            thread.Start();
         }
+
+        foreach (var thread in threads)
+        {
+            thread.Join();
+        }
+
+        Assert.Multiple(() =>
+            {
+                Assert.That(results, Has.All.EqualTo("test"));
+                Assert.That(callCount, Is.EqualTo(1));
+            });
     }
 
     /// <summary>
@@ -46,38 +59,45 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
     public void LazyMultiThreaded_Get_SimpleString_MultipleConcurrentCalls_NoRaceConditions()
     {
         var callCount = 0;
-
-        var supplier = new Func<string>(Supplier);
-        var lazy = this.CreateLazy(supplier);
-        const int taskCount = 100;
-        var tasks = new Task<string>[taskCount];
-
-        for (var i = 0; i < taskCount; i++)
+        var lazy = this.CreateLazy(() =>
         {
-            tasks[i] = Task.Run(() => lazy.Get())!;
-        }
-
-        var results = Task.WhenAll(tasks).Result;
-
-        Assert.That(callCount, Is.EqualTo(1));
-        foreach (var result in results)
-        {
-            Assert.That(result, Is.EqualTo("test"));
-        }
-
-        return;
-
-        string Supplier()
-        {
-            callCount++;
+            Interlocked.Increment(ref callCount);
             return "test";
+        });
+
+        const int threadsCount = 100;
+        var threads = new Thread[threadsCount];
+        var results = new string[threadsCount];
+
+        for (var i = 0; i < threadsCount; i++)
+        {
+            var index = i;
+            threads[i] = new Thread(() =>
+            {
+                results[index] = lazy.Get();
+            });
         }
+
+        foreach (var thread in threads)
+        {
+            thread.Start();
+        }
+
+        foreach (var thread in threads)
+        {
+            thread.Join();
+        }
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(results, Has.All.EqualTo("test"));
+            Assert.That(callCount, Is.EqualTo(1));
+        });
     }
 
     /// <inheritdoc/>
-    protected override ILazy<T> CreateLazy<T>(Func<T?> supplier)
-        where T : default
+    protected override ILazy<T> CreateLazy<T>(Func<T> supplier)
     {
-        return new LazyMultiThreaded<T>(supplier!);
+        return new LazyMultiThreaded<T>(supplier);
     }
 }
