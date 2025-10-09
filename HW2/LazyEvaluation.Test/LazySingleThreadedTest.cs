@@ -15,13 +15,25 @@ public class LazySingleThreadedTest : LazyEvaluationTest
     [Test]
     public void LazySingleThreaded_Get_Double_ReturnsCorrectValue()
     {
+        var callCount = 0;
+
         var lazy = this.CreateLazy((Func<double>)Supplier);
+        var result1 = lazy.Get();
+        var result2 = lazy.Get(); // Второй вызов для проверки кэширования
 
-        var result = lazy.Get();
-
-        Assert.That(result, Is.EqualTo(42.5));
+        Assert.Multiple(() =>
+        {
+            Assert.That(result1, Is.EqualTo(1.5));
+            Assert.That(result2, Is.EqualTo(1.5));
+            Assert.That(callCount, Is.EqualTo(1), "Supplier should be called exactly once.");
+        });
         return;
-        double Supplier() => 42.5;
+
+        double Supplier()
+        {
+            callCount++;
+            return 1.5;
+        }
     }
 
     /// <summary>
@@ -38,9 +50,9 @@ public class LazySingleThreadedTest : LazyEvaluationTest
     }
 
     /// <inheritdoc/>
-    protected override ILazy<T> CreateLazy<T>(Func<T?> supplier)
+    protected override ILazy<T?> CreateLazy<T>(Func<T?>? supplier)
         where T : default
     {
-        return new LazySingleThreaded<T>(supplier!);
+        return new LazySingleThreaded<T?>(supplier!);
     }
 }

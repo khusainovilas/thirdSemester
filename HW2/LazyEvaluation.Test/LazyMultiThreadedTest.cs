@@ -56,7 +56,7 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
     /// Verifies that LazyMultiThreaded handles multiple concurrent calls without race conditions.
     /// </summary>
     [Test]
-    public void LazyMultiThreaded_Get_SimpleString_MultipleConcurrentCalls_NoRaceConditions()
+    public void LazyMultiThreaded_Get_String_NoRaceConditions()
     {
         var callCount = 0;
         var lazy = this.CreateLazy(() =>
@@ -67,14 +67,14 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
 
         const int threadsCount = 100;
         var threads = new Thread[threadsCount];
-        var results = new string[threadsCount];
+        var results = new string?[threadsCount];
 
         for (var i = 0; i < threadsCount; i++)
         {
             var index = i;
             threads[i] = new Thread(() =>
             {
-                results[index] = lazy.Get();
+                results[index] = lazy.Get()!;
             });
         }
 
@@ -96,8 +96,9 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
     }
 
     /// <inheritdoc/>
-    protected override ILazy<T> CreateLazy<T>(Func<T> supplier)
+    protected override ILazy<T?> CreateLazy<T>(Func<T?>? supplier)
+        where T : default
     {
-        return new LazyMultiThreaded<T>(supplier);
+        return new LazyMultiThreaded<T?>(supplier);
     }
 }

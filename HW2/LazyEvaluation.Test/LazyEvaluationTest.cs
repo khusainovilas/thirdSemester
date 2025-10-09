@@ -77,7 +77,7 @@ public abstract class LazyEvaluationTest
         Assert.That(result, Is.Null);
         return;
 
-        string Supplier()
+        string? Supplier()
         {
             return null;
         }
@@ -89,5 +89,5 @@ public abstract class LazyEvaluationTest
     /// <param name="supplier">function responsible for computing the value.</param>
     /// <typeparam name="T">the type of the computed value.</typeparam>
     /// <returns>a new ILazy instance.</returns>
-    protected abstract ILazy<T> CreateLazy<T>(Func<T?> supplier);
+    protected abstract ILazy<T?> CreateLazy<T>(Func<T?>? supplier);
 }
