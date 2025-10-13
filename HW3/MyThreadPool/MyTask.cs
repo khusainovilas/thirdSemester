@@ -4,6 +4,10 @@
 
 namespace MyThreadPool;
 
+/// <summary>
+/// Represents a task that executes a function and produces a result>.
+/// </summary>
+/// <typeparam name="TResult">The type of the result produced by the task.</typeparam>
 internal class MyTask<TResult> : IMyTask<TResult>
 {
     private readonly object @lock = new();
@@ -82,7 +86,7 @@ internal class MyTask<TResult> : IMyTask<TResult>
     /// Returns an Action that executes the task, stores the result or exception, and queues continuations.
     /// </summary>
     /// <returns>An Action to be executed by the thread pool.</returns>
-    private Action GetExecuteAction()
+    public Action? GetExecuteAction()
     {
         return () =>
         {
