@@ -9,5 +9,7 @@ namespace MyThreadPool;
 /// </summary>
 public class MyThreadPool
 {
-    
+    public void QueueTask(Action action)
+    {
+    }
 }
