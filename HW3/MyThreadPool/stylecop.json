@@ -3,7 +3,8 @@
   "settings": {
     "documentationRules": {
       "companyName": "khusainovilas",
-      "copyrightText": "Copyright (c) {companyName}. All rights reserved."
+      "copyrightText": "Copyright (c) {companyName}. All rights reserved.",
+      "xmlHeader": true
     }
   }
 }
