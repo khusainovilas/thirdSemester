@@ -10,10 +10,10 @@ namespace LazyEvaluation;
 /// <typeparam name="T">The type of the value produced by the lazy computation.</typeparam>
 public class LazySingleThreaded<T> : ILazy<T>
 {
-    private Func<T> supplier;
+    private Func<T>? supplier;
     private T? value;
     private bool isComputed;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LazySingleThreaded{T}"/> class.
     /// </summary>
@@ -23,7 +23,7 @@ public class LazySingleThreaded<T> : ILazy<T>
         this.supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
         this.isComputed = false;
     }
-    
+
     /// <inheritdoc/>
     public T Get()
     {
@@ -32,7 +32,7 @@ public class LazySingleThreaded<T> : ILazy<T>
             return this.value!;
         }
 
-        this.value = this.supplier();
+        this.value = this.supplier!();
         this.isComputed = true;
         this.supplier = null!;
 

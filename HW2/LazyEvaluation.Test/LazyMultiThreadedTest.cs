@@ -31,7 +31,7 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
             var index = i;
             threads[i] = new Thread(() =>
             {
-                results[index] = lazy.Get() ?? string.Empty;
+                results[index] = lazy.Get();
             });
         }
 
@@ -74,7 +74,7 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
             var index = i;
             threads[i] = new Thread(() =>
             {
-                results[index] = lazy.Get()!;
+                results[index] = lazy.Get();
             });
         }
 
@@ -98,6 +98,6 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
     /// <inheritdoc/>
     protected override ILazy<T> CreateLazy<T>(Func<T> supplier)
     {
-        return new LazySingleThreaded<T>(supplier);
+        return new LazyMultiThreaded<T>(supplier);
     }
 }

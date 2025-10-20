@@ -11,10 +11,10 @@ namespace LazyEvaluation;
 public class LazyMultiThreaded<T> : ILazy<T>
 {
     private readonly object lockObject = new();
-    private Func<T> supplier;
+    private Func<T>? supplier;
     private T? value;
     private volatile bool isComputed;
-    
+
     /// <summary>
     /// Initializes a new instance of the <see cref="LazyMultiThreaded{T}"/> class.
     /// </summary>
@@ -24,7 +24,7 @@ public class LazyMultiThreaded<T> : ILazy<T>
         this.supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
         this.isComputed = false;
     }
-    
+
     /// <inheritdoc/>
     public T Get()
     {
@@ -35,12 +35,14 @@ public class LazyMultiThreaded<T> : ILazy<T>
 
         lock (this.lockObject)
         {
-            if (!this.isComputed)
+            if (this.isComputed)
             {
-                this.value = this.supplier();
-                this.isComputed = true;
-                this.supplier = null!;
+                return this.value!;
             }
+
+            this.value = this.supplier!();
+            this.isComputed = true;
+            this.supplier = null!;
         }
 
         return this.value!;

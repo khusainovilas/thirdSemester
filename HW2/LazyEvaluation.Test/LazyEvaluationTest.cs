@@ -17,20 +17,23 @@ public abstract class LazyEvaluationTest
     {
         var callCount = 0;
 
-        var supplier = new Func<string>(Supplier);
-        var lazy = this.CreateLazy(supplier);
-
-        lazy.Get();
-        lazy.Get();
-
-        Assert.That(callCount, Is.EqualTo(1));
-        return;
-
-        string Supplier()
+        var supplier = new Func<string?>(() =>
         {
             callCount++;
             return "test";
-        }
+        });
+
+        var lazy = this.CreateLazy(supplier);
+
+        var result1 = lazy.Get();
+        var result2 = lazy.Get();
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(result1, Is.EqualTo("test"));
+            Assert.That(result2, Is.EqualTo("test"));
+            Assert.That(callCount, Is.EqualTo(1));
+        });
     }
 
     /// <summary>
@@ -39,19 +42,13 @@ public abstract class LazyEvaluationTest
     [Test]
     public void Lazy_Get_SimpleString_NonNullSupplier_SameResult()
     {
-        var supplier = new Func<string>(Supplier);
+        var supplier = new Func<string?>(() => "test");
         var lazy = this.CreateLazy(supplier);
 
         var result1 = lazy.Get();
         var result2 = lazy.Get();
 
         Assert.That(result2, Is.EqualTo(result1));
-        return;
-
-        string Supplier()
-        {
-            return "test";
-        }
     }
 
     /// <summary>
@@ -60,7 +57,11 @@ public abstract class LazyEvaluationTest
     [Test]
     public void Lazy_Constructor_NullSupplier_ThrowsException()
     {
-        Assert.Throws<ArgumentNullException>(() => this.CreateLazy<string>(null));
+        Assert.Throws<ArgumentNullException>(() =>
+        {
+            Func<string?> supplier = null!;
+            this.CreateLazy(supplier);
+        });
     }
 
     /// <summary>
@@ -69,18 +70,21 @@ public abstract class LazyEvaluationTest
     [Test]
     public void Lazy_Get_NullResultSupplier_ReturnsNull()
     {
-        var supplier = new Func<string>(Supplier);
+        var callCount = 0;
+        var supplier = new Func<string?>(() =>
+        {
+            callCount++;
+            return null;
+        });
+
         var lazy = this.CreateLazy(supplier);
 
-        var result = lazy.Get();
-
-        Assert.That(result, Is.Null);
-        return;
-
-        string? Supplier()
+        Assert.Multiple(() =>
         {
-            return null;
-        }
+            Assert.That(lazy.Get(), Is.Null);
+            Assert.That(lazy.Get(), Is.Null);
+            Assert.That(callCount, Is.EqualTo(1));
+        });
     }
 
     /// <summary>
@@ -89,5 +93,5 @@ public abstract class LazyEvaluationTest
     /// <param name="supplier">function responsible for computing the value.</param>
     /// <typeparam name="T">the type of the computed value.</typeparam>
     /// <returns>a new ILazy instance.</returns>
-    protected abstract ILazy<T?> CreateLazy<T>(Func<T?>? supplier);
+    protected abstract ILazy<T> CreateLazy<T>(Func<T> supplier);
 }
