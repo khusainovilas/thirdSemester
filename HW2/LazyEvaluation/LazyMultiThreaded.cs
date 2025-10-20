@@ -11,45 +11,38 @@ namespace LazyEvaluation;
 public class LazyMultiThreaded<T> : ILazy<T>
 {
     private readonly object lockObject = new();
-    private Func<T>? supplier;
+    private Func<T> supplier;
     private T? value;
     private volatile bool isComputed;
-
+    
     /// <summary>
     /// Initializes a new instance of the <see cref="LazyMultiThreaded{T}"/> class.
     /// </summary>
     /// <param name="supplier">The delegate that produces the value when needed.</param>
-    public LazyMultiThreaded(Func<T>? supplier)
+    public LazyMultiThreaded(Func<T> supplier)
     {
         this.supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
         this.isComputed = false;
     }
-
+    
     /// <inheritdoc/>
-    public T? Get()
+    public T Get()
     {
         if (this.isComputed)
         {
-            return this.value;
+            return this.value!;
         }
 
         lock (this.lockObject)
         {
-            if (this.isComputed)
+            if (!this.isComputed)
             {
-                return this.value;
-            }
-
-            var func = this.supplier;
-            if (func != null)
-            {
-                this.value = func();
+                this.value = this.supplier();
                 this.isComputed = true;
+                this.supplier = null!;
             }
-
-            this.supplier = null;
         }
 
-        return this.value;
+        return this.value!;
     }
 }

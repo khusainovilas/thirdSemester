@@ -50,9 +50,8 @@ public class LazySingleThreadedTest : LazyEvaluationTest
     }
 
     /// <inheritdoc/>
-    protected override ILazy<T?> CreateLazy<T>(Func<T?>? supplier)
-        where T : default
+    protected override ILazy<T> CreateLazy<T>(Func<T> supplier)
     {
-        return new LazySingleThreaded<T?>(supplier!);
+        return new LazySingleThreaded<T>(supplier);
     }
 }

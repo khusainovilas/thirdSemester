@@ -14,5 +14,5 @@ public interface ILazy<T>
     /// Gets the lazily computed value. The value is computed on the first call and cached for subsequent calls.
     /// </summary>
     /// <returns>The computed or cached value.</returns>
-    T? Get();
+    T Get();
 }
