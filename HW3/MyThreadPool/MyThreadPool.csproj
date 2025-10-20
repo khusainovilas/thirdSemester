@@ -6,6 +6,7 @@
         <ImplicitUsings>enable</ImplicitUsings>
         <Nullable>enable</Nullable>
         <RootNamespace>MyThreadPool</RootNamespace>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
     </PropertyGroup>
 
     <ItemGroup>
@@ -13,14 +14,10 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Include="NewStyleCop.Analyzers" Version="1.2.0-alpha.1">
-        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-        <PrivateAssets>all</PrivateAssets>
-      </PackageReference>
-    </ItemGroup>
-
-    <ItemGroup>
-      <Compile Include="obj\MyTask.cs" />
+        <PackageReference Include="NewStyleCop.Analyzers" Version="1.2.0-alpha.1">
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+            <PrivateAssets>all</PrivateAssets>
+        </PackageReference>
     </ItemGroup>
 
 </Project>

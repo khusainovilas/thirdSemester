@@ -64,6 +64,39 @@ public class MyThreadPool
     }
 
     /// <summary>
+    /// Initiates a collaborative shutdown, preventing new tasks from being queued and allowing existing tasks to complete.
+    /// Blocks until all threads have finished.
+    /// </summary>
+    public void Shutdown()
+    {
+        lock (this.queueLock)
+        {
+            if (this.isShutdown)
+            {
+                return;
+            }
+
+            this.isShutdown = true;
+            Monitor.PulseAll(this.queueLock);
+        }
+
+        this.shutdownEvent.WaitOne();
+    }
+
+    /// <summary>
+    /// Disposes the thread pool, ensuring a proper shutdown.
+    /// </summary>
+    public void Dispose()
+    {
+        if (!this.isShutdown)
+        {
+            this.Shutdown();
+        }
+
+        this.shutdownEvent.Dispose();
+    }
+
+    /// <summary>
     /// Queues a task for execution by the thread pool.
     /// </summary>
     /// <param name="action">The action to execute.</param>
@@ -123,38 +156,5 @@ public class MyThreadPool
         {
             this.shutdownEvent.Set();
         }
-    }
-
-    /// <summary>
-    /// Initiates a collaborative shutdown, preventing new tasks from being queued and allowing existing tasks to complete.
-    /// Blocks until all threads have finished.
-    /// </summary>
-    public void Shutdown()
-    {
-        lock (this.queueLock)
-        {
-            if (this.isShutdown)
-            {
-                return;
-            }
-
-            this.isShutdown = true;
-            Monitor.PulseAll(this.queueLock);
-        }
-
-        this.shutdownEvent.WaitOne();
-    }
-
-    /// <summary>
-    /// Disposes the thread pool, ensuring a proper shutdown.
-    /// </summary>
-    public void Dispose()
-    {
-        if (!this.isShutdown)
-        {
-            this.Shutdown();
-        }
-
-        this.shutdownEvent.Dispose();
     }
 }
