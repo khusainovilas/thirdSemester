@@ -18,8 +18,4 @@
         <AdditionalFiles Include="stylecop.json" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Test\dir\" />
-    </ItemGroup>
-
 </Project>
