@@ -2,7 +2,7 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFTP", "MyFTP\MyFTP.csproj", "{15BAB866-F9EC-4581-A2DA-D9436094B887}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFTP.client", "MyFTP.client\MyFTP.client.csproj", "{9A29907E-A801-4F31-8176-2DD0F1A9F475}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFTP.Client", "MyFTP.Client\MyFTP.Client.csproj", "{9A29907E-A801-4F31-8176-2DD0F1A9F475}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyFTP.Tests", "MyFTP.Tests\MyFTP.Tests.csproj", "{75720F9D-8B5C-4EA4-ABB9-FEFD37969DBF}"
 EndProject

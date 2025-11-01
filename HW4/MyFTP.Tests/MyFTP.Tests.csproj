@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <ProjectReference Include="..\MyFTP.client\MyFTP.client.csproj" />
+      <ProjectReference Include="..\MyFTP.Client\MyFTP.Client.csproj" />
       <ProjectReference Include="..\MyFTP\MyFTP.csproj" />
     </ItemGroup>
 

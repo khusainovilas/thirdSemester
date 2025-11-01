@@ -57,32 +57,11 @@ internal class RequestHandler(NetworkStream stream)
     }
 
     /// <summary>
-    /// Converts a relative path to a secure full path within the server root.
-    /// Returns null if the path is invalid or attempts to escape the root.
-    /// </summary>
-    /// <param name="relativePath">The path relative to the server root.</param>
-    /// <returns>Secure full path or null.</returns>
-    private static string? GetSecurePath(string relativePath)
-    {
-        try
-        {
-            var fullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), relativePath));
-
-            var root = Directory.GetCurrentDirectory();
-            return !fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? null :
-                fullPath;
-        }
-        catch
-        {
-            return null;
-        }
-    }
-
-    /// <summary>
     /// Processes the List command.
     /// Returns a list of files and folders.
     /// </summary>
     /// <param name="relativePath">The path relative to the server root.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task HandleListAsync(string relativePath)
     {
         var fullPath = GetSecurePath(relativePath);
@@ -119,6 +98,7 @@ internal class RequestHandler(NetworkStream stream)
     /// Sends the file size and bytes.
     /// </summary>
     /// <param name="relativePath">The path relative to the server root.</param>
+    /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
     public async Task HandleGetAsync(string relativePath)
     {
         var fullPath = GetSecurePath(relativePath);
@@ -136,6 +116,28 @@ internal class RequestHandler(NetworkStream stream)
         await this.writer.FlushAsync();
         await this.writer.BaseStream.WriteAsync(fileBytes);
         await this.writer.BaseStream.FlushAsync();
+    }
+
+    /// <summary>
+    /// Converts a relative path to a secure full path within the server root.
+    /// Returns null if the path is invalid or attempts to escape the root.
+    /// </summary>
+    /// <param name="relativePath">The path relative to the server root.</param>
+    /// <returns>Secure full path or null.</returns>
+    private static string? GetSecurePath(string relativePath)
+    {
+        try
+        {
+            var fullPath = Path.GetFullPath(Path.Combine(Directory.GetCurrentDirectory(), relativePath));
+
+            var root = Directory.GetCurrentDirectory();
+            return !fullPath.StartsWith(root, StringComparison.OrdinalIgnoreCase) ? null :
+                fullPath;
+        }
+        catch
+        {
+            return null;
+        }
     }
 
     /// <summary>
