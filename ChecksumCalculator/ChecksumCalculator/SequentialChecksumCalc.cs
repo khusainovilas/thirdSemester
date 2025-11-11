@@ -64,9 +64,7 @@ public class SequentialChecksumCalc
 
         var nameBytes = Encoding.UTF8.GetBytes(name);
 
-        var entries = Directory.GetFileSystemEntries(directoryPath)
-            .OrderBy(Path.GetFileName, StringComparer.Ordinal)
-            .ToArray();
+        var entries = Directory.GetFileSystemEntries(directoryPath).OrderBy(Path.GetFileName, StringComparer.Ordinal).ToArray();
 
         var childHashes = new List<byte[]>(entries.Length);
 
@@ -74,9 +72,7 @@ public class SequentialChecksumCalc
         {
             cancellationToken.ThrowIfCancellationRequested();
 
-            var childHash = Directory.Exists(entry)
-                ? await this.ComputeDirectoryHashAsync(entry, cancellationToken)
-                : await this.ComputeFileHashAsync(entry, cancellationToken);
+            var childHash = Directory.Exists(entry) ? await this.ComputeDirectoryHashAsync(entry, cancellationToken) : await this.ComputeFileHashAsync(entry, cancellationToken);
 
             childHashes.Add(childHash);
         }
@@ -101,12 +97,12 @@ public class SequentialChecksumCalc
         var nameBytes = Encoding.UTF8.GetBytes(Path.GetFileName(filePath));
 
         await using var stream = File.OpenRead(filePath);
-        using var ms = new MemoryStream(nameBytes.Length + (int)stream.Length);
+        using var memoryStream = new MemoryStream(nameBytes.Length + (int)stream.Length);
 
-        ms.Write(nameBytes);
-        await stream.CopyToAsync(ms, cancellationToken);
-        ms.Position = 0;
+        memoryStream.Write(nameBytes);
+        await stream.CopyToAsync(memoryStream, cancellationToken);
+        memoryStream.Position = 0;
 
-        return await this.md5.ComputeHashAsync(ms, cancellationToken);
+        return await this.md5.ComputeHashAsync(memoryStream, cancellationToken);
     }
 }
