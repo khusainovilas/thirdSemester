@@ -48,10 +48,11 @@ public class SequentialChecksumCalc
     /// Operation cancellation token.
     /// </param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task<string> ComputeChecksumHexAsync(string directoryPath, CancellationToken cancellationToken = default)
+    public async Task<string> ComputeChecksumBase64Async(string directoryPath, CancellationToken cancellationToken = default)
     {
-        var hash = await this.ComputeChecksumAsync(directoryPath, cancellationToken);
-        return Convert.ToHexString(hash).ToLowerInvariant();
+        var hash = await this.ComputeChecksumAsync(directoryPath, cancellationToken).ConfigureAwait(false);
+
+        return Convert.ToBase64String(hash);
     }
 
     private async Task<byte[]> ComputeDirectoryHashAsync(string directoryPath, CancellationToken cancellationToken)

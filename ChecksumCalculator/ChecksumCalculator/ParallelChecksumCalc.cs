@@ -14,7 +14,6 @@ public class ParallelChecksumCalc
 {
     private static readonly int MaxDegreeOfParallelism = Environment.ProcessorCount;
     private static readonly SemaphoreSlim FileReadSemaphore = new(MaxDegreeOfParallelism, MaxDegreeOfParallelism);
-    private readonly MD5 md5 = MD5.Create();
 
     /// <summary>
     /// Asynchronously calculates a directory checksum using parallelism.
@@ -43,12 +42,11 @@ public class ParallelChecksumCalc
     /// <param name="directoryPath">Directory path.</param>
     /// <param name="cancellationToken">Cancellation token.</param>
     /// <returns>A <see cref="Task"/> representing the asynchronous operation.</returns>
-    public async Task<string> ComputeChecksumHexAsync(string directoryPath, CancellationToken cancellationToken = default)
+    public async Task<string> ComputeChecksumBase64Async(string directoryPath, CancellationToken cancellationToken = default)
     {
-        var hash = await this.ComputeChecksumAsync(directoryPath, cancellationToken)
-            .ConfigureAwait(false);
+        var hash = await this.ComputeChecksumAsync(directoryPath, cancellationToken).ConfigureAwait(false);
 
-        return Convert.ToHexString(hash).ToLowerInvariant();
+        return Convert.ToBase64String(hash);
     }
 
     private static async ValueTask SemaphoreSlimWaitAsync(CancellationToken cancellationToken)
@@ -95,8 +93,9 @@ public class ParallelChecksumCalc
             Buffer.BlockCopy(childHash, 0, combinedBuffer, currentOffset, childHash.Length);
             currentOffset += childHash.Length;
         }
-
-        return this.md5.ComputeHash(combinedBuffer);
+    
+        using var md5 = MD5.Create();
+        return md5.ComputeHash(combinedBuffer);
     }
 
     private async Task<byte[]> ComputeFileHashAsync(string filePath, CancellationToken cancellationToken)
@@ -114,8 +113,8 @@ public class ParallelChecksumCalc
             memoryStream.Write(nameBytes);
             await fileStream.CopyToAsync(memoryStream, cancellationToken).ConfigureAwait(false);
             memoryStream.Position = 0;
-
-            return await this.md5.ComputeHashAsync(memoryStream, cancellationToken).ConfigureAwait(false);
+            using var md5 = MD5.Create();
+            return await md5.ComputeHashAsync(memoryStream, cancellationToken).ConfigureAwait(false);
         }
         finally
         {
