@@ -22,7 +22,7 @@
     </ItemGroup>
 
     <ItemGroup>
-        <ProjectReference Include="..\MyFTP.Client\MyFTP.Client.csproj" />
+        <ProjectReference Include="..\MyFTP.client\MyFTP.client.csproj" />
         <ProjectReference Include="..\MyFTP\MyFTP.csproj" />
     </ItemGroup>
 
@@ -40,7 +40,7 @@
     <Target Name="CopyServerAndClient" AfterTargets="Build">
         <ItemGroup>
             <ServerFiles Include="..\MyFTP\bin\$(Configuration)\net9.0\*.*" />
-            <ClientFiles Include="..\MyFTP.Client\bin\$(Configuration)\net9.0\*.*" />
+            <ClientFiles Include="..\MyFTP.client\bin\$(Configuration)\net9.0\*.*" />
         </ItemGroup>
         <Copy SourceFiles="@(ServerFiles)" DestinationFolder="$(OutputPath)server\" SkipUnchangedFiles="true" />
         <Copy SourceFiles="@(ClientFiles)" DestinationFolder="$(OutputPath)client\" SkipUnchangedFiles="true" />
