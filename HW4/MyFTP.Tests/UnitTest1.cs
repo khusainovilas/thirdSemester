@@ -1,3 +1,7 @@
+// <copyright file="UnitTest1.cs" company="khusainovilas">
+// Copyright (c) khusainovilas. All rights reserved.
+// </copyright>
+
 namespace MyFTP.Tests;
 
 public class Tests
