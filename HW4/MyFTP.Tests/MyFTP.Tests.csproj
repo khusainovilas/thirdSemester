@@ -1,0 +1,49 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+        <IsPackable>false</IsPackable>
+        <IsTestProject>true</IsTestProject>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="coverlet.collector" Version="6.0.0"/>
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0"/>
+        <PackageReference Include="NUnit" Version="3.14.0"/>
+        <PackageReference Include="NUnit.Analyzers" Version="3.9.0"/>
+        <PackageReference Include="NUnit3TestAdapter" Version="4.5.0"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Using Include="NUnit.Framework"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\MyFTP.client\MyFTP.client.csproj" />
+        <ProjectReference Include="..\MyFTP\MyFTP.csproj" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <PackageReference Include="StyleCop.Analyzers" Version="1.2.0-beta.556">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+    </ItemGroup>
+
+    <ItemGroup>
+        <AdditionalFiles Include="stylecop.json" />
+    </ItemGroup>
+
+    <Target Name="CopyServerAndClient" AfterTargets="Build">
+        <ItemGroup>
+            <ServerFiles Include="..\MyFTP\bin\$(Configuration)\net9.0\*.*" />
+            <ClientFiles Include="..\MyFTP.client\bin\$(Configuration)\net9.0\*.*" />
+        </ItemGroup>
+        <Copy SourceFiles="@(ServerFiles)" DestinationFolder="$(OutputPath)server\" SkipUnchangedFiles="true" />
+        <Copy SourceFiles="@(ClientFiles)" DestinationFolder="$(OutputPath)client\" SkipUnchangedFiles="true" />
+    </Target>
+
+</Project>
