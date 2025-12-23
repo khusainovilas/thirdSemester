@@ -46,6 +46,8 @@ public class ChatRunnerTests
             listener.Stop();
         });
 
+        await Task.Delay(200);
+
         var clientTask = Task.Run(async () =>
         {
             using var client = new TcpClient();
