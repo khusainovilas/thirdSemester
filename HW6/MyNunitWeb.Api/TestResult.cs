@@ -4,8 +4,8 @@
 
 namespace MyNunitWeb.Api;
 
+using MyNUnit;
 using System.ComponentModel.DataAnnotations;
-using MyNunit;
 
 /// <summary>
 /// Represents a single test execution result.
