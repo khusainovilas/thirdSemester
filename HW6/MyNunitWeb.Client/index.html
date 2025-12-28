@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MyNUnit Web</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="header">
+    <h1 class="header__title">MyNUnit</h1>
+  </header>
+
+  <main class="main">
+    <div class="main__content">
+      <!-- DLLs -->
+      <aside class="dlls">
+        <h2 class="dlls__title">DLLs</h2>
+        <div class="dlls__actions">
+          <button class="btn dlls__btn dlls__btn--add">Add DLL</button>
+          <button class="btn dlls__btn dlls__btn--run-selected" disabled>Run Tests</button>
+          <button class="btn dlls__btn dlls__btn--run-all" disabled>Run All Tests</button>
+          <input type="file" class="dlls__input" accept=".dll" style="display:none" multiple>
+        </div>
+        <ul class="dlls__list"></ul>
+      </aside>
+
+      <!-- История -->
+      <section class="history">
+        <h2 class="history__title">Test History</h2>
+        <button class="btn history__btn history__btn--clear">Clear History</button>
+        <ul class="history__list"></ul>
+      </section>
+    </div>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -30,11 +30,6 @@ public class TestResult
     /// Gets additional message (failure reason or ignore reason).
     /// </summary>
     public string? Message { get; init; }
-
-    /// <summary>
-    /// Gets exception thrown by test.
-    /// </summary>
-    public Exception? Exception { get; init; }
 }
 
 /// <summary>

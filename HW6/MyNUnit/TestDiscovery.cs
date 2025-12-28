@@ -16,74 +16,38 @@ using System.Reflection;
 public static class TestDiscovery
 {
     /// <summary>
-    /// Finds all test classes in the specified path.
+    /// Discovers test classes in a DLL.
     /// </summary>
-    /// <param name="path">Path to directory or .dll file.</param>
+    /// <param name="dllPath">Path to test assembly.</param>
     /// <returns>List of test class types.</returns>
-    public static IReadOnlyList<Type> Discover(string path)
+    public static IReadOnlyList<Type> DiscoverFromDll(string dllPath)
     {
-        ArgumentException.ThrowIfNullOrWhiteSpace(path);
+        ArgumentException.ThrowIfNullOrWhiteSpace(dllPath);
 
-        var result = new List<Type>();
-
-        foreach (var assembly in LoadAssemblies(path))
+        if (!File.Exists(dllPath))
         {
-            foreach (var type in assembly.GetTypes())
-            {
-                if (ContainsTests(type))
-                {
-                    result.Add(type);
-                }
-            }
+            throw new FileNotFoundException("DLL not found", dllPath);
         }
 
-        return result;
+        if (!dllPath.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
+        {
+            throw new ArgumentException("File must be a DLL", nameof(dllPath));
+        }
+
+        var assembly = Assembly.LoadFrom(dllPath);
+
+        return assembly
+            .GetTypes()
+            .Where(ContainsTests)
+            .ToList();
     }
 
     private static bool ContainsTests(Type type)
     {
-        return type.GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic)
+        return type.GetMethods(
+                BindingFlags.Instance |
+                BindingFlags.Public |
+                BindingFlags.NonPublic)
             .Any(m => m.GetCustomAttribute<TestAttribute>() != null);
-    }
-
-    private static IEnumerable<Assembly> LoadAssemblies(string path)
-    {
-        if (Directory.Exists(path))
-        {
-            foreach (var file in Directory.GetFiles(path, "*.dll", SearchOption.AllDirectories))
-            {
-                var assembly = TryLoadAssembly(file);
-                if (assembly != null)
-                {
-                    yield return assembly;
-                }
-            }
-        }
-        else if (File.Exists(path) && path.EndsWith(".dll", StringComparison.OrdinalIgnoreCase))
-        {
-            var assembly = TryLoadAssembly(path);
-            if (assembly != null)
-            {
-                yield return assembly;
-            }
-        }
-        else
-        {
-            throw new FileNotFoundException($"Path not found: {path}");
-        }
-    }
-
-    private static Assembly? TryLoadAssembly(string filePath)
-    {
-        try
-        {
-            return Assembly.LoadFrom(filePath);
-        }
-        catch (Exception ex) when (ex is BadImageFormatException or FileLoadException)
-        {
-            Console.WriteLine($"[Warning] Failed to load assembly: {filePath}");
-            Console.WriteLine($"          {ex.Message}");
-            return null;
-        }
     }
 }

@@ -63,8 +63,7 @@ public static class TestRunner
                 {
                     TestName = $"{testClass.FullName}.{test.Name}",
                     Status = TestStatus.Failed,
-                    Message = "BeforeClass failed",
-                    Exception = ex,
+                    Message = $"BeforeClass failed: {ex.Message}",
                 });
             }
         }
@@ -133,14 +132,14 @@ public static class TestRunner
                 return Pass(testName, stopwatch.Elapsed);
             }
 
-            return Fail(testName, actual.Message, stopwatch.Elapsed, actual);
+            return Fail(testName, actual.Message, stopwatch.Elapsed);
         }
         catch (Exception ex)
         {
             stopwatch.Stop();
             InvokeAfterSafely(after, instance);
 
-            return Fail(testName, ex.Message, stopwatch.Elapsed, ex);
+            return Fail(testName, ex.Message, stopwatch.Elapsed);
         }
     }
 
@@ -206,7 +205,7 @@ public static class TestRunner
         };
     }
 
-    private static TestResult Fail(string name, string message, TimeSpan time = default, Exception? exception = null)
+    private static TestResult Fail(string name, string message, TimeSpan time = default)
     {
         return new TestResult
         {
@@ -214,7 +213,6 @@ public static class TestRunner
             Status = TestStatus.Failed,
             Duration = time,
             Message = message,
-            Exception = exception,
         };
     }
 }

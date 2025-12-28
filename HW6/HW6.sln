@@ -1,7 +1,5 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNunitWeb.Server", "MyNunitWeb.Server\MyNunitWeb.Server.csproj", "{7E056C49-469E-4CCE-B46D-DAAB9542FD05}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNunitWeb.Api", "MyNunitWeb.Api\MyNunitWeb.Api.csproj", "{F3460FEE-64A5-46D3-BFC6-1FC65305B172}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MyNUnit", "MyNUnit\MyNUnit.csproj", "{E723C040-0075-424E-A25F-0380CD4169BD}"

@@ -1,5 +1,5 @@
-﻿// <copyright file="AppDbContext.cs" company="MyNunitWeb">
-// Copyright (c) MyNunitWeb. All rights reserved.
+﻿// <copyright file="AppDBContext.cs" company="khusainovilas">
+// Copyright (c) khusainovilas. All rights reserved.
 // </copyright>
 
 namespace MyNunitWeb.Api;
@@ -29,4 +29,30 @@ public class AppDbContext : DbContext
     /// Gets the collection of test results.
     /// </summary>
     public DbSet<TestResult> TestResults => this.Set<TestResult>();
+
+    /// <inheritdoc/>
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<TestRun>()
+            .HasMany(r => r.Results)
+            .WithOne()
+            .HasForeignKey(r => r.TestRunId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<TestRun>()
+            .HasIndex(r => r.StartedAt);
+
+        modelBuilder.Entity<TestResult>()
+            .HasIndex(r => r.TestRunId);
+
+        modelBuilder.Entity<TestResult>()
+            .Property(r => r.TestName)
+            .HasMaxLength(128);
+
+        modelBuilder.Entity<TestResult>()
+            .Property(r => r.Message)
+            .HasMaxLength(256);
+    }
 }
