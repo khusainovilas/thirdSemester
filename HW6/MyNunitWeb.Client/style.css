@@ -1,0 +1,109 @@
+body {
+    font-family: 'Segoe UI', Arial, sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    margin: 0;
+    padding: 20px;
+}
+
+.app {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.app__title {
+    text-align: center;
+    color: #1a1a1a;
+    margin-bottom: 40px;
+}
+
+.card {
+    padding: 30px;
+    margin-bottom: 40px;
+    border-radius: 12px;
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
+}
+
+.card_history .history_list {
+    max-height: 400px;
+    overflow-y: auto;
+    padding-right: 10px;
+}
+
+.card__title {
+    margin-top: 0;
+    color: #2c3e50;
+    border-bottom: 2px solid #0066cc;
+    padding-bottom: 10px;
+}
+
+.upload_form__input {
+    display: block;
+    margin: 20px 0;
+    padding: 10px;
+    font-size: 16px;
+}
+
+.upload_form__button {
+    padding: 14px 32px;
+    background: #0066cc;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background 0.3s;
+}
+
+.upload_form__button:hover {
+    background: #0050a0;
+}
+
+.results_table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.results_table th,
+.results_table td {
+    padding: 14px;
+    text-align: left;
+    border-bottom: 1px solid #eee;
+}
+
+.results_table th {
+    background: #f8f9fa;
+    font-weight: 600;
+}
+
+.summary {
+    font-size: 18px;
+    font-weight: bold;
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+.history_list {
+    list-style: none;
+    padding: 0;
+}
+
+.history_list li {
+    padding: 20px;
+    background: #f8f9fa;
+    margin: 12px 0;
+    border-radius: 10px;
+    border-left: 6px solid #0066cc;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.history_list li:hover {
+    background: #e8f4ff;
+    transform: translateX(5px);
+}
+
+.passed { color: green; font-weight: bold; }
+.failed { color: red; font-weight: bold; }
+.ignored { color: orange; font-weight: bold; }

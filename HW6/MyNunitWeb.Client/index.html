@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNUnit Web</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="app">
+        <h1 class="app__title">MyNUnitWeb</h1>
+
+        <section class="card card_upload">
+            <h2 class="card__title">Upload Assemblies and Run Tests</h2>
+            <form id="uploadForm" class="upload_form">
+                <input type="file" name="files" accept=".dll" required class="upload_form__input" />
+                <button type="submit" class="upload_form__button">Start Testing</button>
+            </form>
+        </section>
+
+        <section id="currentResults" class="card card_current" style="display:none;">
+            <h2 class="card__title">Current Run Results</h2>
+            <p id="currentSummary" class="summary summary_current"></p>
+            <table id="currentTable" class="results_table results_table_current">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Status</th>
+                        <th>Time (ms)</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="card card_history">
+            <h2 class="card__title">Run History</h2>
+            <ul id="historyList" class="history_list history_list_main"></ul>
+        </section>
+
+        <section id="details" class="card card_details" style="display:none;">
+            <h2 class="card__title">Run Details</h2>
+            <p id="detailsSummary" class="summary summary_details"></p>
+            <table id="detailsTable" class="results_table results_table_details">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Status</th>
+                        <th>Time (ms)</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
