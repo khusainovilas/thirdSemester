@@ -1,39 +1,61 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MyNUnit Web</title>
-  <link rel="stylesheet" href="style.css">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyNUnit Web</title>
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <header class="header">
-    <h1 class="header__title">MyNUnit</h1>
-  </header>
+    <div class="app">
+        <h1 class="app__title">MyNUnitWeb</h1>
 
-  <main class="main">
-    <div class="main__content">
-      <!-- DLLs -->
-      <aside class="dlls">
-        <h2 class="dlls__title">DLLs</h2>
-        <div class="dlls__actions">
-          <button class="btn dlls__btn dlls__btn--add">Add DLL</button>
-          <button class="btn dlls__btn dlls__btn--run-selected" disabled>Run Tests</button>
-          <button class="btn dlls__btn dlls__btn--run-all" disabled>Run All Tests</button>
-          <input type="file" class="dlls__input" accept=".dll" style="display:none" multiple>
-        </div>
-        <ul class="dlls__list"></ul>
-      </aside>
+        <section class="card card_upload">
+            <h2 class="card__title">Upload Assemblies and Run Tests</h2>
+            <form id="uploadForm" class="upload_form">
+                <input type="file" name="files" multiple accept=".dll" required class="upload_form__input" />
+                <button type="submit" class="upload_form__button">Start Testing</button>
+            </form>
+        </section>
 
-      <!-- История -->
-      <section class="history">
-        <h2 class="history__title">Test History</h2>
-        <button class="btn history__btn history__btn--clear">Clear History</button>
-        <ul class="history__list"></ul>
-      </section>
+        <section id="currentResults" class="card card_current" style="display:none;">
+            <h2 class="card__title">Current Run Results</h2>
+            <p id="currentSummary" class="summary summary_current"></p>
+            <table id="currentTable" class="results_table results_table_current">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Status</th>
+                        <th>Time (ms)</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
+
+        <section class="card card_history">
+            <h2 class="card__title">Run History</h2>
+            <ul id="historyList" class="history_list history_list_main"></ul>
+        </section>
+
+        <section id="details" class="card card_details" style="display:none;">
+            <h2 class="card__title">Run Details</h2>
+            <p id="detailsSummary" class="summary summary_details"></p>
+            <table id="detailsTable" class="results_table results_table_details">
+                <thead>
+                    <tr>
+                        <th>Test</th>
+                        <th>Status</th>
+                        <th>Time (ms)</th>
+                        <th>Message</th>
+                    </tr>
+                </thead>
+                <tbody></tbody>
+            </table>
+        </section>
     </div>
-  </main>
 
-  <script src="app.js"></script>
+    <script src="script.js"></script>
 </body>
 </html>

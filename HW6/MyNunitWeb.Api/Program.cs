@@ -7,13 +7,24 @@ using MyNunitWeb.Api;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=MyNUnit.db"));
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowAll", policy =>
+    {
+        policy.AllowAnyOrigin()
+              .AllowAnyMethod()
+              .AllowAnyHeader();
+    });
+});
+
+builder.Services.AddDbContext<MyNUnitDbContext>(options =>
+    options.UseSqlite("Data Source=mynunit.db"));
 
 builder.Services.AddControllers();
 
 var app = builder.Build();
 
+app.UseCors("AllowAll");
 app.UseHttpsRedirection();
 app.MapControllers();
 
