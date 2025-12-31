@@ -36,7 +36,6 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (err) {
             console.error('Network error:', err);
-            alert('Unable to connect to the server. Make sure dotnet run is running.');
         }
     });
 
