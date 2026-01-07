@@ -19,10 +19,15 @@ if (args.Length == 1 && args[0].Equals("benchmark", StringComparison.CurrentCult
 {
     MatrixBench.RunBenchmark();
 }
-else if (args.Length != 3 || string.IsNullOrEmpty(args[0]) || string.IsNullOrEmpty(args[1]) ||
-         string.IsNullOrEmpty(args[2]))
+else if (args.Length != 3 || string.IsNullOrEmpty(args[0]) || string.IsNullOrEmpty(args[1]) || string.IsNullOrEmpty(args[2]))
 {
-    Console.WriteLine("Error when passing arguments");
+    Console.WriteLine("Invalid arguments");
+    Console.WriteLine(
+        "Usage:\n" +
+        "1) Matrix multiplication:\n" +
+        "   dotnet run -- <matrixFile1> <matrixFile2> <resultFile>\n" +
+        "2) Run benchmark:\n" +
+        "   dotnet run -- benchmark");
 }
 else
 {
@@ -30,9 +35,30 @@ else
     var matrixPath2 = args[1];
     var resultFile = args[2];
 
-    var matrix1 = MatrixUtils.ReadMatrixFromFile(matrixPath1);
-    var matrix2 = MatrixUtils.ReadMatrixFromFile(matrixPath2);
-    var matrixResult = MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2);
+    try
+    {
+        var matrix1 = MatrixUtils.ReadMatrixFromFile(matrixPath1);
+        var matrix2 = MatrixUtils.ReadMatrixFromFile(matrixPath2);
+        var matrixResult = MatrixUtils.MultiplyMatrixParallel(matrix1, matrix2);
 
-    MatrixUtils.WriteMatrixToFile(resultFile, matrixResult);
+        MatrixUtils.WriteMatrixToFile(resultFile, matrixResult);
+
+        Console.WriteLine($"Matrix multiplication completed successfully. Result saved in '{resultFile}'.");
+    }
+    catch (MatrixFormatException ex)
+    {
+        Console.WriteLine($"Matrix error: {ex.Message}");
+    }
+    catch (FileNotFoundException ex)
+    {
+        Console.WriteLine($"File error: {ex.Message}");
+    }
+    catch (ArgumentException ex)
+    {
+        Console.WriteLine($"Multiplication error: {ex.Message}");
+    }
+    catch (Exception ex)
+    {
+        Console.WriteLine($"Unexpected error: {ex.Message}");
+    }
 }
