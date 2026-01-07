@@ -21,7 +21,6 @@ public class LazySingleThreaded<T> : ILazy<T>
     public LazySingleThreaded(Func<T> supplier)
     {
         this.supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
-        this.isComputed = false;
     }
 
     /// <inheritdoc/>
