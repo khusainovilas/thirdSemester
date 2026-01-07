@@ -1,4 +1,4 @@
-﻿// <copyright file="matrixUtils.cs" company="khusainovilas">
+﻿// <copyright file="MatrixUtils.cs" company="khusainovilas">
 // Copyright (c) khusainovilas. All rights reserved.
 // </copyright>
 
@@ -18,7 +18,7 @@ public static class MatrixUtils
     /// <param name="minValue">Minimum value for matrix elements (inclusive).</param>
     /// <param name="maxValue">Maximum value for matrix elements (exclusive).</param>
     /// <returns>A 2D integer array filled with random values.</returns>
-    public static int[,] GeneratorRandomMatrix(int rows, int columns, int minValue = -100, int maxValue = 100)
+    public static int[,] GenerateRandomMatrix(int rows, int columns, int minValue = -100, int maxValue = 100)
     {
         var matrix = new int[rows, columns];
         var randomNumbers = new Random();
@@ -40,7 +40,7 @@ public static class MatrixUtils
     /// <param name="matrix1">First matrix.</param>
     /// <param name="matrix2">Second matrix.</param>
     /// <returns>Resulting matrix after multiplication.</returns>
-    public static int[,] MatrixMultiply(int[,] matrix1, int[,] matrix2)
+    public static int[,] MultiplyMatrix(int[,] matrix1, int[,] matrix2)
     {
         var lengthRowMatrix1 = matrix1.GetLength(0);
         var lengthColumnMatrix1 = matrix1.GetLength(1);
@@ -94,28 +94,32 @@ public static class MatrixUtils
         }
 
         var result = new int[lengthRowMatrix1, lengthColumnMatrix2];
-        var threads = new Thread[lengthRowMatrix1];
+        var numThreads = Math.Min(Environment.ProcessorCount, lengthRowMatrix1);
+        var threads = new Thread[numThreads];
 
-        for (var i = 0; i < lengthRowMatrix1; i++)
+        for (var t = 0; t < numThreads; t++)
         {
-            var row = i;
-            threads[row] = new Thread(() =>
+            var threadIndex = t;
+            threads[t] = new Thread(() =>
             {
-                for (var j = 0; j < lengthColumnMatrix2; j++)
+                for (var i = threadIndex; i < lengthRowMatrix1; i += numThreads)
                 {
-                    var sum = 0;
-                    for (var k = 0; k < lengthColumnMatrix1; k++)
+                    for (var j = 0; j < lengthColumnMatrix2; j++)
                     {
-                        sum += matrix1[row, k] * matrix2[k, j];
-                    }
+                        var sum = 0;
+                        for (var k = 0; k < lengthColumnMatrix1; k++)
+                        {
+                            sum += matrix1[i, k] * matrix2[k, j];
+                        }
 
-                    result[row, j] = sum;
+                        result[i, j] = sum;
+                    }
                 }
             });
-            threads[row].Start();
+            threads[t].Start();
         }
 
-        for (var i = 0; i < lengthRowMatrix1; i++)
+        for (var i = 0; i < numThreads; i++)
         {
             threads[i].Join();
         }
@@ -132,7 +136,7 @@ public static class MatrixUtils
     /// true — if the matrices are the same size and all their elements match.
     /// false — if the dimensions are different or at least one element is different.
     /// </returns>
-    public static bool MatrixEquals(int[,] matrix1, int[,] matrix2)
+    public static bool AreMatrixEqual(int[,] matrix1, int[,] matrix2)
     {
         if (matrix1.GetLength(0) != matrix2.GetLength(0) ||
             matrix1.GetLength(1) != matrix2.GetLength(1))
@@ -175,7 +179,7 @@ public static class MatrixUtils
         // Checking that the file is not empty
         if (lines.Length == 0)
         {
-            throw new Exception("Matrix file is empty.");
+            throw new MatrixFormatException("Matrix file is empty.");
         }
 
         var rows = lines.Length;
@@ -188,7 +192,7 @@ public static class MatrixUtils
             // Check that the string contains only numbers, spaces, and minus signs.
             if (lines[i].Any(c => !char.IsDigit(c) && c != ' ' && c != '-'))
             {
-                throw new Exception("Invalid character in matrix file: only digits, spaces and minus signs are allowed.");
+                throw new MatrixFormatException("Invalid character in matrix file: only digits, spaces and minus signs are allowed.");
             }
 
             var nums = lines[i].Split(' ', StringSplitOptions.RemoveEmptyEntries)
@@ -198,7 +202,7 @@ public static class MatrixUtils
             // Checking that all rows and columns in the matrix have the same length
             if (nums.Length != columns)
             {
-                throw new Exception("Invalid matrix format: the matrix is not complete");
+                throw new MatrixFormatException("Invalid matrix format: the matrix is not complete.");
             }
 
             for (var j = 0; j < columns; j++)

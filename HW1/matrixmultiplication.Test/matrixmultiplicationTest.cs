@@ -1,4 +1,4 @@
-// <copyright file="matrixmultiplicationTest.cs" company="khusainovilas">
+// <copyright file="MatrixmultiplicationTest.cs" company="khusainovilas">
 // Copyright (c) khusainovilas. All rights reserved.
 // </copyright>
 
@@ -41,23 +41,53 @@ public class MatrixmultiplicationTest
 
     /// <summary>
     /// Tests the sequential matrix multiplication function.
-    /// Checks that the result matches the expected output.
     /// </summary>
     [Test]
     public void MatrixUtils_MatrixMultiply_Matrix1_Matrix2()
     {
-        var result = MatrixUtils.MatrixMultiply(this.matrix1, this.matrix2);
-        Assert.That(MatrixUtils.MatrixEquals(result, this.matrixExpected), Is.True);
+        var result = MatrixUtils.MultiplyMatrix(this.matrix1, this.matrix2);
+        Assert.That(MatrixUtils.AreMatrixEqual(result, this.matrixExpected), Is.True);
     }
 
     /// <summary>
     /// Tests the parallel matrix multiplication function.
-    /// Ensures that parallel computation produces the correct result.
     /// </summary>
     [Test]
     public void MatrixUtils_MultiplyMatrixParallel_Matrix1_Matrix2()
     {
         var result = MatrixUtils.MultiplyMatrixParallel(this.matrix1, this.matrix2);
-        Assert.That(MatrixUtils.MatrixEquals(result, this.matrixExpected), Is.True);
+        Assert.That(MatrixUtils.AreMatrixEqual(result, this.matrixExpected), Is.True);
+    }
+
+    /// <summary>
+    /// Tests multiplication with 1x1 matrices.
+    /// </summary>
+    [Test]
+    public void MultiplyMatrix_OneByOneMatrices_ReturnsCorrectValue()
+    {
+        int[,] a = { { 5 } };
+        int[,] b = { { 3 } };
+        int[,] expected = { { 15 } };
+
+        var resultSeq = MatrixUtils.MultiplyMatrix(a, b);
+        var resultPar = MatrixUtils.MultiplyMatrixParallel(a, b);
+
+        Assert.Multiple(() =>
+        {
+            Assert.That(MatrixUtils.AreMatrixEqual(resultSeq, expected), Is.True);
+            Assert.That(MatrixUtils.AreMatrixEqual(resultPar, expected), Is.True);
+        });
+    }
+
+    /// <summary>
+    /// Tests multiplication with empty matrices.
+    /// </summary>
+    [Test]
+    public void MultiplyMatrix_EmptyMatrices_ThrowsArgumentException()
+    {
+        int[,] empty = new int[0, 0];
+
+        Assert.Throws<ArgumentException>(() => MatrixUtils.MultiplyMatrix(empty, this.matrix2));
+        Assert.Throws<ArgumentException>(() => MatrixUtils.MultiplyMatrixParallel(empty, this.matrix2));
     }
 }

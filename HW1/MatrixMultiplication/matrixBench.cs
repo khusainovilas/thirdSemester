@@ -1,4 +1,4 @@
-﻿// <copyright file="matrixBench.cs" company="khusainovilas">
+﻿// <copyright file="MatrixBench.cs" company="khusainovilas">
 // Copyright (c) khusainovilas. All rights reserved.
 // </copyright>
 
@@ -68,8 +68,8 @@ public static class MatrixBench
     /// <returns>Elapsed time in milliseconds for a single multiplication.</returns>
     private static long PerformSingleRun(int size, bool useParallel)
     {
-        var matrix1 = MatrixUtils.GeneratorRandomMatrix(size, size);
-        var matrix2 = MatrixUtils.GeneratorRandomMatrix(size, size);
+        var matrix1 = MatrixUtils.GenerateRandomMatrix(size, size);
+        var matrix2 = MatrixUtils.GenerateRandomMatrix(size, size);
 
         var stopwatch = Stopwatch.StartNew();
 
@@ -79,7 +79,7 @@ public static class MatrixBench
         }
         else
         {
-            MatrixUtils.MatrixMultiply(matrix1, matrix2);
+            MatrixUtils.MultiplyMatrix(matrix1, matrix2);
         }
 
         stopwatch.Stop();
