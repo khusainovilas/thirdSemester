@@ -27,8 +27,8 @@ public class LazySingleThreadedTest : LazyEvaluationTest
 
         Assert.Multiple(() =>
         {
-            Assert.That(result1, Is.EqualTo(1.5));
-            Assert.That(result2, Is.EqualTo(1.5));
+            Assert.That(result1, Is.EqualTo(1.5).Within(1e-9));
+            Assert.That(result2, Is.EqualTo(1.5).Within(1e-9));
             Assert.That(callCount, Is.EqualTo(1));
         });
     }

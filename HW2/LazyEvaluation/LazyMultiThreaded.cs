@@ -22,7 +22,6 @@ public class LazyMultiThreaded<T> : ILazy<T>
     public LazyMultiThreaded(Func<T> supplier)
     {
         this.supplier = supplier ?? throw new ArgumentNullException(nameof(supplier));
-        this.isComputed = false;
     }
 
     /// <inheritdoc/>

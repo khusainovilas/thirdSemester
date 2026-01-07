@@ -18,13 +18,15 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
         var callCount = 0;
         var lazy = this.CreateLazy(() =>
         {
-        Interlocked.Increment(ref callCount);
-        return "test";
+            Interlocked.Increment(ref callCount);
+            return "test";
         });
 
         const int threadsCount = 100;
         var threads = new Thread[threadsCount];
         var results = new string[threadsCount];
+
+        var startEvent = new ManualResetEvent(false);
 
         for (var i = 0; i < threadsCount; i++)
         {
@@ -34,6 +36,8 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
                 results[index] = lazy.Get();
             });
         }
+
+        startEvent.Set();
 
         foreach (var thread in threads)
         {
@@ -50,49 +54,6 @@ public class LazyMultiThreadedTest : LazyEvaluationTest
                 Assert.That(results, Has.All.EqualTo("test"));
                 Assert.That(callCount, Is.EqualTo(1));
             });
-    }
-
-    /// <summary>
-    /// Verifies that LazyMultiThreaded handles multiple concurrent calls without race conditions.
-    /// </summary>
-    [Test]
-    public void LazyMultiThreaded_Get_String_NoRaceConditions()
-    {
-        var callCount = 0;
-        var lazy = this.CreateLazy(() =>
-        {
-            Interlocked.Increment(ref callCount);
-            return "test";
-        });
-
-        const int threadsCount = 100;
-        var threads = new Thread[threadsCount];
-        var results = new string?[threadsCount];
-
-        for (var i = 0; i < threadsCount; i++)
-        {
-            var index = i;
-            threads[i] = new Thread(() =>
-            {
-                results[index] = lazy.Get();
-            });
-        }
-
-        foreach (var thread in threads)
-        {
-            thread.Start();
-        }
-
-        foreach (var thread in threads)
-        {
-            thread.Join();
-        }
-
-        Assert.Multiple(() =>
-        {
-            Assert.That(results, Has.All.EqualTo("test"));
-            Assert.That(callCount, Is.EqualTo(1));
-        });
     }
 
     /// <inheritdoc/>
